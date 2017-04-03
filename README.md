@@ -20,7 +20,7 @@ To install with [Bower](http://bower.io/):
 
 ### Manual Download
 
-Download the [latest version](https://raw.github.com/vikseriq/requirejs-vue/latest/requirejs-vue.js).
+Download the [latest version](https://raw.githubusercontent.com/vikseriq/requirejs-vue/master/requirejs-vue.js).
 
 ## Usage <a name="usage"></a>
 
@@ -69,6 +69,8 @@ define(['Vue'], function(vue){
 });
 </script>
 ```
+
+For advanced usage see [demo project](/demo/).
 
 ## License
 

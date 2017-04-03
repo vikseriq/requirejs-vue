@@ -1,0 +1,17 @@
+{
+  "name": "demo",
+  "authors": ["vikseriq"],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "vue": "^2.2.6",
+    "requirejs": "^2.3.3"
+  }
+}

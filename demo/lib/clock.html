@@ -1,0 +1,48 @@
+<!-- clock sample on vue -->
+<script>
+    define(['Vue'], function(Vue){
+      return new Vue({
+        template: template,
+        filters: {
+          digits: function(value){
+            return +(value) < 10 ? '0' + value : value;
+          }
+        },
+        data: {
+          now: new Date()
+        },
+        mounted: function(){
+          var self = this;
+          window.setInterval(function(){
+            self.now = new Date()
+          }, 1000)
+        },
+        computed: {
+          hour: function(){
+            return this.now.getHours();
+          },
+          minute: function(){
+            return this.now.getMinutes();
+          },
+          second: function(){
+            return this.now.getSeconds()
+          }
+        }
+      })
+    });
+</script>
+<style>
+    body {
+        background: darkslategray;
+    }
+    .clock {
+        font-size: 200%;
+        color: white;
+        text-align: center;
+    }
+</style>
+<template>
+    <div class="clock">
+        <span>{{hour | digits}}</span>:<span>{{minute | digits}}</span>:<span>{{second | digits}}</span>
+    </div>
+</template>
