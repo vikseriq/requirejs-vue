@@ -1,16 +1,21 @@
 /**
  * Vue loader for RequireJS
  *
- * @version 1.0.0
+ * @version 1.1.0
  * @author vikseriq
  * @license MIT
  */
 define([], function(){
   'use strict';
 
-  var fetchContent = null;
+  var fetchContent = null,
+    masterConfig = {
+      isBuild: false
+    },
+    buildMap = {};
 
   if (typeof window !== 'undefined' && window.document){
+    // browser-side
     if (typeof XMLHttpRequest === 'undefined')
       throw new Error('XMLHttpRequest not available');
 
@@ -24,7 +29,24 @@ define([], function(){
       xhr.send();
     };
   } else {
-    throw new Error('Unsupported environment');
+    // probably server-size
+    var fs = require.nodeRequire('fs');
+    if (!fs || !fs.readFileSync)
+      throw new Error('requirejs-vue: Unsupported platform');
+
+    fetchContent = function(url, callback){
+      try {
+        var file = fs.readFileSync(url, 'utf8');
+        // remove BOM 😜
+        if (file[0] === '\uFEFF'){
+          file = file.substring(1);
+        }
+        callback(file);
+      } catch (e) {
+        throw new Error('requirejs-vue: Can not load file ' + url);
+        callback('');
+      }
+    };
   }
 
   var extractor = {
@@ -44,7 +66,7 @@ define([], function(){
       text = text.substring(start, end);
 
       if (!options.whitespaces)
-        text = text.replace(/[\n\r]+(\s{2,})/g, '');
+        text = text.replace(/[\r\n]+(\s{2,})/g, '');
 
       if (options.escape)
         text = text.replace(/([^\\])'/g, "$1\\'");
@@ -52,6 +74,9 @@ define([], function(){
       return text;
     },
 
+    /**
+     * Cleanup HTML
+     */
     cleanup: function(text){
       return text.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*|<!--[\s\S]*?-->$/, '');
     },
@@ -86,6 +111,8 @@ define([], function(){
      * Inject styles to DOM
      */
     style: function(text){
+      if (masterConfig.isBuild || typeof document === 'undefined')
+        return;
       var e = document.createElement('style');
       e.type = 'text/css';
       e.appendChild(document.createTextNode(text));
@@ -109,18 +136,27 @@ define([], function(){
   };
 
   return {
-    version: '1.0.0',
+    version: '1.1.0',
 
     fetchContent: fetchContent,
 
     load: function(name, require, load, config){
+      masterConfig.isBuild = config.isBuild;
 
       var fullName = name + (/\.(vue|html)$/.test(name) ? '' : '.vue');
       var path = require.toUrl(fullName);
 
       fetchContent(path, function(text){
-        load.fromText(parse(text));
+        var data = parse(text);
+        buildMap[name] = data;
+        load.fromText(data);
       });
+    },
+
+    write: function(plugin, module, write){
+      if (buildMap.hasOwnProperty(module)){
+        write.asModule(plugin + '!' + module, buildMap[module]);
+      }
     }
   }
 });
