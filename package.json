@@ -1,0 +1,21 @@
+{
+  "name": "requirejs-vue",
+  "version": "1.1.0",
+  "description": "An AMD loader for Vue components 🤘🏽",
+  "main": "requirejs-vue.js",
+  "keywords": [
+    "javascript",
+    "vuejs",
+    "requirejs",
+    "loader",
+    "vue"
+  ],
+  "files": [],
+  "repository": "https://github.com/vikseriq/requirejs-vue",
+  "author": "Wiktor Serow <vikseriq@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "requirejs": "^2.3.5",
+    "vuejs": "^2.0.6"
+  }
+}

@@ -1,16 +1,20 @@
 # requirejs-vue
 
 A Vue.js [Single File Components](https://vuejs.org/v2/guide/single-file-components.html) loader plugin for RequireJS.
-One-file, browser-only, no additional fats, babels, gluten-free.
+One-file, browser or server, no additional fats, no babels, gluten-free.
 
-It uses XMLHttpRequest to fetch the .vue files, so you can only fetch files 
-that are on the same domain as the HTML page, and most browsers place restrictions on using 
-XMLHttpRequest from local file URLs, so use a web server to serve your .vue files.
+On browser-side it uses XMLHttpRequest to fetch the .vue files, so you can only fetch files 
+that are on the same domain as the html page. Most browsers place restrictions on using 
+XMLHttpRequest from local file URLs, so use a web server to serve your ```.vue``` files.
 
+The server-side building with RequireJS Optimizer [r.js](https://github.com/requirejs/r.js) also available and works well.
+
+Currently no plans to support templating engines (like pug) nor css preprocessors (less/sass) until they became available 
+as browser-side dependency for RequireJS.
 
 ## Install <a name="install"></a>
 
-### Bower
+### Via package manager
 
 To install with [Bower](http://bower.io/):
 
@@ -18,9 +22,21 @@ To install with [Bower](http://bower.io/):
   bower install requirejs-vue
 ```
 
-### Manual Download
+With [yarn](https://github.com/yarnpkg/yarn)
 
-Download the [latest version](https://raw.githubusercontent.com/vikseriq/requirejs-vue/master/requirejs-vue.js).
+```
+yarn add requirejs-vue
+```
+
+Or good ol' ```npm```:
+```
+npm install --save requirejs-vue
+```
+
+
+### Manual download
+
+Download the [latest version](https://rawgit.com/vikseriq/requirejs-vue/master/requirejs-vue.js).
 
 ## Usage <a name="usage"></a>
 
@@ -38,7 +54,7 @@ Reference Vue file via the ```vue!```.
 For example, to load the `component.vue` file that is in your ```baseUrl``` directory:
 
     require(['vue!component'], function (component) {
-
+		//
     });
     
 You can specify any alias for loader but update paths alias too.
@@ -70,8 +86,33 @@ define(['Vue'], function(vue){
 </script>
 ```
 
+### Server-side building with r.js
+
+Plugin supports RequireJS Optimizer. Follow the usual r.js workflow: specify build config in ```build.js``` like:
+
+```js
+{
+	baseUrl: './',
+	name: 'init',
+	out: './dist.js',
+	findNestedDependencies: true,
+	optimize: 'none',
+	paths: {
+	  Vue: 'node_modules/vue/dist/vue.min',
+	  vue: 'node_modules/requirejs-vue/requirejs-vue',
+	  app: 'your-entry-point'
+}
+  }
+```
+
+and then run builder:
+
+```
+r.js -o build.js
+```
+
 For advanced usage see [demo project](/demo/).
 
 ## License
 
-MIT
+MIT &copy; 2017 vikseriq
