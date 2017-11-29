@@ -9,8 +9,10 @@ XMLHttpRequest from local file URLs, so use a web server to serve your ```.vue``
 
 The server-side building with RequireJS Optimizer [r.js](https://github.com/requirejs/r.js) also available and works well.
 
-Currently no plans to support templating engines (like pug) nor css preprocessors (less/sass) until they became available 
-as browser-side dependency for RequireJS.
+Plugin supports `pug` templates in runtime via [browser-side pug renderer](https://github.com/vikseriq/browser-pug).
+
+Since another templating engines or css preprocessors ([less](https://github.com/guybedford/require-less)/sass)
+not available as maintainer AMD modules there are no plans to support them. Feel free to make your own 😉
 
 ## Install <a name="install"></a>
 
@@ -67,7 +69,7 @@ Content of template will be cleared from whitespaces and comments.
 
 Sample .vue file supported by loader:
 
-```html
+```vue
 <template>
     <div v-cloak>Vue-demo component root</div>
 </template>
@@ -85,6 +87,49 @@ define(['Vue'], function(vue){
 });
 </script>
 ```
+
+### Pug templates
+
+Using [browser-pug](https://github.com/vikseriq/browser-pug) it is possible to transpose
+basic `pug` markup as Vue template. To achieve do next steps:
+
+1. Install and require ```browser-pug``` in your RequireJS config:
+
+```bash
+yarn add browser-pug
+```
+
+	...
+		paths: {
+		...
+			Vue: 'node_modules/vue/dist/vue.min',
+        	vue: 'node_modules/requirejs-vue/requirejs-vue',
+			'browser-pug': 'mode_modules/browser-pug/browser-pug'
+		...
+		}
+	...
+	
+2. Mark template as pug-able in your Vue component:
+
+```html
+<template lang="pug">
+div
+	p Here comes the magic
+	a(v-bind:href="dummyLink") Follow us
+</template>
+<script>
+  define(['Vue'], function(Vue){
+    new Vue({
+      template: template,
+      data: {
+        dummyLink: 'http://bit.ly/naked_truth_about_javascript'
+      }
+    }).$mount('#app');
+  });
+</script>
+```
+
+***Note: be aware of using this heavily in production may slow down your app initialization due client-side `.pug` rendering***
 
 ### Server-side building with r.js
 

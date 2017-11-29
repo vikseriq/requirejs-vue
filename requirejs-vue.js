@@ -1,7 +1,7 @@
 /**
  * Vue loader for RequireJS
  *
- * @version 1.1.0
+ * @version 1.1.1
  * @author vikseriq
  * @license MIT
  */
@@ -29,7 +29,7 @@ define([], function(){
       xhr.send();
     };
   } else {
-    // probably server-size
+    // probably server-side
     var fs = require.nodeRequire('fs');
     if (!fs || !fs.readFileSync)
       throw new Error('requirejs-vue: Unsupported platform');
@@ -44,7 +44,6 @@ define([], function(){
         callback(file);
       } catch (e) {
         throw new Error('requirejs-vue: Can not load file ' + url);
-        callback('');
       }
     };
   }
@@ -66,7 +65,7 @@ define([], function(){
       text = text.substring(start, end);
 
       if (!options.whitespaces)
-        text = text.replace(/[\r\n]+(\s{2,})/g, '');
+        text = text.replace(/[\n]+/g, '').replace(/\s{2,}/g, '');
 
       if (options.escape)
         text = text.replace(/([^\\])'/g, "$1\\'");
@@ -86,9 +85,21 @@ define([], function(){
      */
     template: function(text){
       var start = text.indexOf('<template');
-      var end = text.lastIndexOf('</template>');
-      return this._wrapped_content(text, 'template', {lastIndex: true, escape: true})
-        .trim();
+      if (start < 0)
+        return '';
+      var content;
+      // check for `pug` template engine mark
+      if (/^<template\s+lang="(pug|jade)"/.test(text.substring(start))){
+        var pug = require('browser-pug');
+        content = this._wrapped_content(text, 'template', {lastIndex: true, escape: false, whitespaces: true});
+        content = pug.render(content);
+      } else {
+        // generic html
+        content = this._wrapped_content(text, 'template', {lastIndex: true, escape: true})
+          .trim();
+      }
+
+      return content;
     },
 
     /**
@@ -136,7 +147,7 @@ define([], function(){
   };
 
   return {
-    version: '1.1.0',
+    version: '1.1.1',
 
     fetchContent: fetchContent,
 
@@ -149,7 +160,14 @@ define([], function(){
       fetchContent(path, function(text){
         var data = parse(text);
         buildMap[name] = data;
-        load.fromText(data);
+        try {
+          load.fromText(data);
+        } catch (err){
+          if (typeof console !== 'undefined'){
+            console.warn('requirejs-vue: can not load module; check for typos in component', path);
+            console.error(err);
+          }
+        }
       });
     },
 
