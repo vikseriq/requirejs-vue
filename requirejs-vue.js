@@ -65,10 +65,10 @@ define([], function(){
       text = text.substring(start, end);
 
       if (!options.whitespaces)
-        text = text.replace(/[\n]+/g, '').replace(/\s{2,}/g, '');
+        text = text.replace(/\s{2,}/g, ' ');
 
       if (options.escape)
-        text = text.replace(/([^\\])'/g, "$1\\'");
+        text = text.replace(/(['\\])/g, '\\$1');
 
       return text;
     },
