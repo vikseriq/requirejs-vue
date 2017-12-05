@@ -1,18 +1,22 @@
 # requirejs-vue
 
-A Vue.js [Single File Components](https://vuejs.org/v2/guide/single-file-components.html) loader plugin for RequireJS.
-One-file, browser or server, no additional fats, no babels, gluten-free.
+![ECMAScript 5.1](https://img.shields.io/badge/es-5-brightgreen.svg)
+![Github file size](https://img.shields.io/github/size/vikseriq/requirejs-vue/requirejs-vue.js.svg)
 
-On browser-side it uses XMLHttpRequest to fetch the .vue files, so you can only fetch files 
-that are on the same domain as the html page. Most browsers place restrictions on using 
+A Vue.js [Single File Components](https://vuejs.org/v2/guide/single-file-components.html) loader plugin for
+[RequireJS](https://github.com/requirejs/requirejs).
+One-file, browser or server, no additional fats, es5+ compatible, no babels, gluten-free.
+
+On browser-side it uses XMLHttpRequest to fetch the .vue files, so you can only fetch files
+that are on the same domain as the html page. Most browsers place restrictions on using
 XMLHttpRequest from local file URLs, so use a web server to serve your ```.vue``` files.
 
 The server-side building with RequireJS Optimizer [r.js](https://github.com/requirejs/r.js) also available and works well.
 
-Plugin supports `pug` templates in runtime via [browser-side pug renderer](https://github.com/vikseriq/browser-pug).
+Plugin supports `pug` templates. Provide pug parser via module config. Tested with [browser-side pug renderer](https://github.com/vikseriq/browser-pug).
 
-Since another templating engines or css preprocessors ([less](https://github.com/guybedford/require-less)/sass)
-not available as maintainer AMD modules there are no plans to support them. Feel free to make your own 😉
+Since another templating engines or css preprocessors (like [less](https://github.com/guybedford/require-less)/sass)
+not available as maintained AMD modules there are no plans to support them. Feel free to write your own 😉
 
 ## Install <a name="install"></a>
 
@@ -50,20 +54,20 @@ Setup loader in RequireJS path like this:
             'vue': 'path to requirejs-vue'
         }
     ...
-    
 
-Reference Vue file via the ```vue!```. 
+
+Reference Vue file via the ```vue!```.
 For example, to load the `component.vue` file that is in your ```baseUrl``` directory:
 
     require(['vue!component'], function (component) {
 		//
     });
-    
+
 You can specify any alias for loader but update paths alias too.
 
 Loader support ```.vue``` and ```.html``` files.
 
-Inside loaded file reference template by ```template``` variable. 
+Inside loaded file reference template by ```template``` variable.
 Stylesheets will applied to ```document.body``` automatically. Currently only global styles supported.
 Content of template will be cleared from whitespaces and comments.
 
@@ -93,23 +97,31 @@ define(['Vue'], function(vue){
 Using [browser-pug](https://github.com/vikseriq/browser-pug) it is possible to transpose
 basic `pug` markup as Vue template. To achieve do next steps:
 
-1. Install and require ```browser-pug``` in your RequireJS config:
+1. Install ```browser-pug``` plugin
 
 ```bash
 yarn add browser-pug
 ```
 
+2. Setup module paths and configs in your RequireJS config:
+
 	...
 		paths: {
 		...
 			Vue: 'node_modules/vue/dist/vue.min',
-        	vue: 'node_modules/requirejs-vue/requirejs-vue',
+        	'vue-loader': 'node_modules/requirejs-vue/requirejs-vue',
 			'browser-pug': 'mode_modules/browser-pug/browser-pug'
 		...
-		}
-	...
-	
-2. Mark template as pug-able in your Vue component:
+		},
+		config: {
+            'vue-loader': {
+                pug: 'browser-pug'
+            }
+        }
+    ...
+
+
+3. Mark template as pug-able in your Vue component:
 
 ```html
 <template lang="pug">

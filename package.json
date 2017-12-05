@@ -1,21 +1,24 @@
 {
   "name": "requirejs-vue",
-  "version": "1.1.2",
-  "description": "An AMD loader for Vue components 🤘🏽",
+  "version": "1.1.4",
+  "description": "An AMD loader for Vue components 🤘🏽. Pug 🐶 supported.",
   "main": "requirejs-vue.js",
   "keywords": [
     "javascript",
     "vuejs",
     "requirejs",
     "loader",
-    "vue"
+    "single file component",
+    "vue",
+    "pug",
+    "jade"
   ],
   "files": [],
   "repository": "https://github.com/vikseriq/requirejs-vue",
   "author": "Wiktor Serow <vikseriq@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "requirejs": "^2.3.5",
-    "vue": "^2.5.9"
+    "requirejs": "^2.3.0",
+    "vue": "^2.2.0"
   }
 }

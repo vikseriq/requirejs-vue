@@ -1,14 +1,19 @@
 /**
  * Vue loader for RequireJS
  *
- * @version 1.1.1
+ * module config: {
+ *    pug: requirejs module id for `pug` template parser (usually 'browser-pug')
+ * }
+ *
+ * @version 1.1.4
  * @author vikseriq
  * @license MIT
  */
-define([], function(){
+define(['module'], function(module){
   'use strict';
 
   var fetchContent = null,
+    moduleVersion = '1.1.4',
     masterConfig = {
       isBuild: false
     },
@@ -32,7 +37,7 @@ define([], function(){
     // probably server-side
     var fs = require.nodeRequire('fs');
     if (!fs || !fs.readFileSync)
-      throw new Error('requirejs-vue: Unsupported platform');
+      throw new Error(module.id + ': Unsupported platform');
 
     fetchContent = function(url, callback){
       try {
@@ -43,7 +48,7 @@ define([], function(){
         }
         callback(file);
       } catch (e) {
-        throw new Error('requirejs-vue: Can not load file ' + url);
+        throw new Error(module.id + ': Can not load file ' + url);
       }
     };
   }
@@ -54,7 +59,7 @@ define([], function(){
      */
     _wrapped_content: function(text, tagname, options){
       options = options || {whitespaces: false};
-      var start = text.lastIndexOf('<' + tagname);
+      var start = text.indexOf('<' + tagname);
       if (start < 0)
         return '';
       start = text.indexOf('>', start) + 1;
@@ -65,7 +70,7 @@ define([], function(){
       text = text.substring(start, end);
 
       if (!options.whitespaces)
-        text = text.replace(/\s{2,}/g, ' ');
+        text = text.replace(/\n/g, ' ').replace(/\s{2,}/g, ' ');
 
       if (options.escape)
         text = text.replace(/(['\\])/g, '\\$1');
@@ -88,11 +93,16 @@ define([], function(){
       if (start < 0)
         return '';
       var content;
+      // `pug` support requires template mark + loader in config
       // check for `pug` template engine mark
       if (/^<template\s+lang="(pug|jade)"/.test(text.substring(start))){
-        var pug = require('browser-pug');
-        content = this._wrapped_content(text, 'template', {lastIndex: true, escape: false, whitespaces: true});
-        content = pug.render(content);
+        if (module.config().pug){
+          var pug = require(module.config().pug);
+          content = this._wrapped_content(text, 'template', {lastIndex: true, escape: false, whitespaces: true});
+          content = pug.render(content);
+        } else {
+          console.warn(module.id + ': missing `pug` in module config');
+        }
       } else {
         // generic html
         content = this._wrapped_content(text, 'template', {lastIndex: true, escape: true})
@@ -147,7 +157,7 @@ define([], function(){
   };
 
   return {
-    version: '1.1.1',
+    version: moduleVersion,
 
     fetchContent: fetchContent,
 
@@ -164,7 +174,7 @@ define([], function(){
           load.fromText(data);
         } catch (err){
           if (typeof console !== 'undefined'){
-            console.warn('requirejs-vue: can not load module; check for typos in component', path);
+            console.warn(module.id + ': can not load module; check for typos in component', path);
             console.error(err);
           }
         }
