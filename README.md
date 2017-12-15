@@ -52,6 +52,13 @@ Setup loader in RequireJS path like this:
         paths: {
             'Vue': 'path to Vue.js',
             'vue': 'path to requirejs-vue'
+        },
+        config: {
+            'vue': {
+                'pug': 'browser-pug',
+                'css': 'inject'
+                'templateVar': 'template'
+            }
         }
     ...
 
@@ -65,12 +72,39 @@ For example, to load the `component.vue` file that is in your ```baseUrl``` dire
 
 You can specify any alias for loader but update paths alias too.
 
+
+### Configuration
+
+Inside loaded file reference template by `templateVar` variable.
+Stylesheets controlled by `css` configuration value. Currently only global styles supported.
+Content of template will be cleared from whitespaces and comments. Nested `template` tags supported.
+
 Loader support ```.vue``` and ```.html``` files.
 
-Inside loaded file reference template by ```template``` variable.
-Stylesheets will applied to ```document.body``` automatically. Currently only global styles supported.
-Content of template will be cleared from whitespaces and comments.
 
+#### css
+`String | Function`, default: `inject`
+
+Strategy to deal with component stylesheets. Variants:
+	* `inject` - appending styles in new `<style>` tag to `document.body`
+	* `skip` - do not process component css. Default action for r.js build mode.
+	* `fn(style, option{name})` - callback function for css aggregation. `style` contains actual component
+		style content, `option.name` hold component file reference
+
+
+#### pug
+`String`, default: `<none>`
+
+Module name for Pug template rendering.
+
+
+#### templateVar
+`String`, default: `template`
+
+Represent component template as `templateVar` variable in script closure.
+
+
+### Basic usage
 Sample .vue file supported by loader:
 
 ```vue

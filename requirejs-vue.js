@@ -2,10 +2,12 @@
  * Vue loader for RequireJS
  *
  * module config: {
- *    pug: requirejs module id for `pug` template parser (usually 'browser-pug')
+ *    pug: String           requirejs module id for `pug` template parser (usually 'browser-pug')
+ *    css: String|Function  css transformation strategy
+ *    templateVar: String   template name for closure
  * }
  *
- * @version 1.1.4
+ * @version 1.1.5
  * @author vikseriq
  * @license MIT
  */
@@ -13,9 +15,10 @@ define(['module'], function(module){
   'use strict';
 
   var fetchContent = null,
-    moduleVersion = '1.1.4',
+    moduleVersion = '1.1.5',
     masterConfig = {
-      isBuild: false
+      isBuild: false,
+      currentImport: ''
     },
     buildMap = {};
 
@@ -127,18 +130,30 @@ define(['module'], function(module){
     }
   };
 
-  var injector = {
-    /**
-     * Inject styles to DOM
-     */
-    style: function(text){
-      if (masterConfig.isBuild || typeof document === 'undefined')
-        return;
+  /**
+   * Processing css style
+   * @param style
+   */
+  var processStyles = function(style){
+    if (!style || !style.trim().length)
+      return;
+    if (masterConfig.isBuild || typeof document === 'undefined')
+      return;
+    var cssStrategy = module.config().css || 'inject';
+
+    if (cssStrategy === 'inject'){
+      // inject to DOM as script
       var e = document.createElement('style');
       e.type = 'text/css';
-      e.appendChild(document.createTextNode(text));
+      e.appendChild(document.createTextNode(style));
       document.body.appendChild(e);
+    } else if (cssStrategy === 'skip'){
+      // do nothing
+    } else if (typeof cssStrategy === 'function'){
+      // call external handler
+      cssStrategy(style, {name: masterConfig.currentImport});
     }
+
   };
 
   /**
@@ -148,8 +163,10 @@ define(['module'], function(module){
    */
   var parse = function(text){
     text = extractor.cleanup(text);
-    injector.style(extractor.style(text));
-    return '(function(template){'
+
+    processStyles(extractor.style(text));
+
+    return '(function(' + (module.config().templateVar || 'template') + '){'
       + extractor.script(text)
       + '})(\''
       + extractor.template(text)
@@ -159,10 +176,9 @@ define(['module'], function(module){
   return {
     version: moduleVersion,
 
-    fetchContent: fetchContent,
-
     load: function(name, require, load, config){
-      masterConfig.isBuild = config.isBuild;
+      masterConfig.isBuild = !!config.isBuild;
+      masterConfig.currentImport = name;
 
       var fullName = name + (/\.(vue|html)$/.test(name) ? '' : '.vue');
       var path = require.toUrl(fullName);

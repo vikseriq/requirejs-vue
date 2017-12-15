@@ -1,6 +1,6 @@
 {
   "name": "requirejs-vue",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "An AMD loader for Vue components 🤘🏽. Pug 🐶 supported.",
   "main": "requirejs-vue.js",
   "keywords": [
