@@ -5,7 +5,14 @@ require(
   {
     paths: {
       'Vue': '../bower_components/vue/dist/vue',
-      'vue': '../../requirejs-vue'
+      'vue': '../bower_components/requirejs-vue/requirejs-vue'
+    },
+    config: {
+      // vue loader configuration
+      'vue': {
+        'css': 'inject',
+        'templateVar': '__template__'
+      }
     }
   },
   ['Vue', 'vue!clock.html', 'vue!component-head.vue'],

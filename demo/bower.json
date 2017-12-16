@@ -1,6 +1,8 @@
 {
-  "name": "demo",
-  "authors": ["vikseriq"],
+  "name": "requirejs-vue-demo",
+  "authors": [
+    "vikseriq"
+  ],
   "description": "",
   "main": "",
   "license": "MIT",
@@ -11,7 +13,8 @@
     "bower_components"
   ],
   "dependencies": {
-    "vue": "^2.2.6",
-    "requirejs": "^2.3.3"
+    "vue": "^2.2.0",
+    "requirejs": "^2.3.0",
+    "requirejs-vue": "^1.1.5"
   }
 }

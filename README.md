@@ -7,8 +7,10 @@ A Vue.js [Single File Components](https://vuejs.org/v2/guide/single-file-compone
 [RequireJS](https://github.com/requirejs/requirejs).
 One-file, browser or server, no additional fats, es5+ compatible, no babels, gluten-free.
 
+## Demo on [Plunker](https://plnkr.co/edit/Y2cEa3)
+
 On browser-side it uses XMLHttpRequest to fetch the .vue files, so you can only fetch files
-that are on the same domain as the html page. Most browsers place restrictions on using
+that are on the *same domain as the html page*. Most browsers place restrictions on using
 XMLHttpRequest from local file URLs, so use a web server to serve your ```.vue``` files.
 
 The server-side building with RequireJS Optimizer [r.js](https://github.com/requirejs/r.js) also available and works well.
@@ -22,13 +24,7 @@ not available as maintained AMD modules there are no plans to support them. Feel
 
 ### Via package manager
 
-To install with [Bower](http://bower.io/):
-
-```
-  bower install requirejs-vue
-```
-
-With [yarn](https://github.com/yarnpkg/yarn)
+To install with [yarn](https://github.com/yarnpkg/yarn)
 
 ```
 yarn add requirejs-vue
@@ -39,6 +35,11 @@ Or good ol' ```npm```:
 npm install --save requirejs-vue
 ```
 
+And [Bower](http://bower.io/):
+
+```
+  bower install requirejs-vue
+```
 
 ### Manual download
 
@@ -82,7 +83,7 @@ Content of template will be cleared from whitespaces and comments. Nested `templ
 Loader support ```.vue``` and ```.html``` files.
 
 
-#### css
+#### `css`
 `String | Function`, default: `inject`
 
 Strategy to deal with component stylesheets. Variants:
@@ -92,13 +93,13 @@ Strategy to deal with component stylesheets. Variants:
 		style content, `option.name` hold component file reference
 
 
-#### pug
+#### `pug`
 `String`, default: `<none>`
 
 Module name for Pug template rendering.
 
 
-#### templateVar
+#### `templateVar`
 `String`, default: `template`
 
 Represent component template as `templateVar` variable in script closure.

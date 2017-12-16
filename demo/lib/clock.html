@@ -2,7 +2,7 @@
 <script>
     define(['Vue'], function(Vue){
       return new Vue({
-        template: template,
+        template: __template__,
         filters: {
           digits: function(value){
             return +(value) < 10 ? '0' + value : value;
@@ -33,7 +33,7 @@
 </script>
 <style>
     body {
-        background: darkslategray;
+        background: slategray;
     }
     .clock {
         font-size: 200%;
